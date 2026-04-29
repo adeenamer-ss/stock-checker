@@ -1,10 +1,14 @@
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 
 st.title("Stock Checker")
 
+current_dir = Path(__file__).parent
+file_path = current_dir / "All Stock.xlsx"
 
-stock_data = pd.read_excel(r"C:/Users/adeen/Desktop/All Stock.xlsx")
+stock_data = pd.read_excel(file_path)
+
 
 
 product = st.selectbox("Enter product", stock_data['Product'], index = None, placeholder="Products", filter_mode="fuzzy")
