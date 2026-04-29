@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 
-st.title("Stock Checker")
+st.title("Stock Checker", text_alignment="center")
 
 current_dir = Path(__file__).parent
 file_path = current_dir / "All Stock.xlsx"
