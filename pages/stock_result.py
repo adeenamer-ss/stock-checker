@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from stock_reporter import stock_data
+from streamlit_app import stock_data
 
 
 st.title("Stock File", text_alignment="center")
