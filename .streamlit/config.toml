@@ -1,5 +1,9 @@
 [theme]
-backgroundColor = "#f0f2f6f7"  # Main background color
-secondaryBackgroundColor = "#eaeaea"  # Sidebar and widget background
-textColor = "#010a01"
-primaryColor = "#12076a"
+primaryColor = "#2C5F8A"              # Deep professional blue for buttons and accents
+backgroundColor = "#F8F9FA"           # Soft off-white, easier on the eyes than pure white
+secondaryBackgroundColor = "#EAECEF"  # Light grey for sidebar and input fields
+textColor = "#1A1A2E"                 # Deep navy-black for text, not harsh pure black
+font = "sans serif"
+
+[runner]
+fastReruns = true
