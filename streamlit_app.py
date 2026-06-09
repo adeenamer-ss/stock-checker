@@ -1,22 +1,33 @@
 import streamlit as st
 import pandas as pd
-from pathlib import Path
+import gspread
+from google.oauth2.service_account import Credentials
+import json
+import os
 
-st.title("Stock Checker", text_alignment="center")
+st.title("Stock Checker", text_alignment = "center")
 
-current_dir = Path(__file__).parent
-file_path = current_dir / "All Stock.xlsx"
+DISPLAY_ORDER = ["TOWNSHIP", "BRANDRETH ROAD", "MANGA MANDI", "P-I-A"]
 
-stock_data = pd.read_excel(file_path)
+@st.cache_resource
+def get_client():
+    scopes = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds_json = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
+    creds = Credentials.from_service_account_info(creds_json, scopes=scopes)
+    return gspread.authorize(creds)
 
+@st.cache_data(ttl=3600)
+def load_stock_data():
+    records = get_client().open("Stock In Hand - Syed Sons").sheet1.get_all_records()
+    return pd.DataFrame(records).set_index("Product")
 
+stock_data = load_stock_data()
 
-product = st.selectbox("Enter product", stock_data['Product'], index = None, placeholder="Products", filter_mode="fuzzy")
+product = st.selectbox("Enter product", stock_data.index, index=None, placeholder="Products", filter_mode = "fuzzy")
 
 if product:
-    stock = stock_data.loc[stock_data["Product"] == product]
-    
-    if(stock.iloc[0,4] != 0):  st.subheader(f"Township : {int(stock.iloc[0,4])}")
-    if(stock.iloc[0,1] != 0):  st.subheader(f"Brandreth Road : {stock.iloc[0,1]}")
-    if(stock.iloc[0,2] != 0):  st.subheader(f"Manga Mandi : {stock.iloc[0,2]}")
-    if(stock.iloc[0,3] != 0):  st.subheader(f"PIA : {stock.iloc[0,3]}")
+    row = stock_data.loc[product]
+    for location in DISPLAY_ORDER:
+        qty = row[location]
+        if qty != 0:
+            st.subheader(f"{location} : {int(qty)}")
